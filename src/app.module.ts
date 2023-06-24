@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { VotantesModule } from './votantes/votantes.module';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -18,7 +19,7 @@ import { VotantesModule } from './votantes/votantes.module';
       autoLoadEntities: true,
       synchronize: true
     }),
-    VotantesModule
+    VotantesModule,
   
   ],
 })

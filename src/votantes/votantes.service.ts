@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreateVotanteDto } from './dto/create-votante.dto';
 import { UpdateVotanteDto } from './dto/update-votante.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class VotantesService {
 
+  private readonly logger = new Logger('VotantesService');
 
   constructor(
     @InjectRepository(Votante)
@@ -25,8 +26,8 @@ export class VotantesService {
       return votante;
       
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException('ayuda')
+
+      
     }
     
   }
@@ -46,4 +47,20 @@ export class VotantesService {
   remove(id: number) {
     return `This action removes a #${id} votante`;
   }
+
+
+    /**
+   * Funcion para detectar el error
+   * @param error 
+   */
+    errorServer(error: any){
+      if (error) 
+      throw new BadRequestException(error)
+      
+  
+      if (error.code === '23505') 
+      throw new BadRequestException(error.detail)
+      this.logger.error(error)
+      throw new InternalServerErrorException('Error inesperado, verifique los logs del servidor');
+    }
 }
