@@ -33,4 +33,9 @@ export class Votante {
 
     @Column()
     barrio: string;
+
+    @Column()
+    direccion: string;
+
+
 }

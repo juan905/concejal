@@ -4,6 +4,10 @@ import { UpdateVotanteDto } from './dto/update-votante.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Votante } from './entities/votante.entity';
 import { Repository } from 'typeorm';
+import { NotFoundException } from '@nestjs/common/exceptions';
+import { Barrio } from './entities/barrio.entity';
+import { Comuna } from './entities/comunas.entity';
+import { FilterVotanteDto } from './dto/filter.dto';
 
 @Injectable()
 export class VotantesService {
@@ -12,40 +16,131 @@ export class VotantesService {
 
   constructor(
     @InjectRepository(Votante)
-    private readonly votanteRepository: Repository<Votante>
+    private readonly votanteRepository: Repository<Votante>,
+
+    @InjectRepository(Barrio)
+    private readonly neigborhoodRepository: Repository<Barrio>,
+
+    @InjectRepository(Comuna)
+    private readonly comunaRepository: Repository<Comuna>
+    
   ){}
 
 
   async create(createVotanteDto: CreateVotanteDto) {
 
     try {
-
       const votante = this.votanteRepository.create(createVotanteDto);
       await this.votanteRepository.save(createVotanteDto);
 
       return votante;
       
     } catch (error) {
-
-      
+      this.errorServer(error);
     }
     
   }
 
-  findAll() {
-    return `This action returns all votantes`;
+  async filterByNeighborhood(filterVotanteDto: FilterVotanteDto){
+  
+    try {
+    const neigborhoods = await this.neigborhoodRepository.createQueryBuilder('barrio').where(`UPPER(barrio.nombreBarrio) like '%${filterVotanteDto.barrio}%'`).getMany();
+
+    console.log("BARRIOS", neigborhoods);
+    
+      
+    const response = [];
+
+    for (const barrio of neigborhoods) {
+      const comuna = await this.comunaRepository.findOne({
+       where:{
+        id: barrio.comuna
+       }
+      })
+
+      const votantes = await this.votanteRepository.findBy({
+        barrio: barrio.id
+      })
+
+      for (const votante of votantes) {
+        response.push({
+          ...votante,
+          barrio: barrio.nombreBarrio,
+          comuna: comuna.nombreComuna
+        })
+      }
+    }
+    
+
+    return response;
+      
+    } catch (error) {
+      console.log("error", error);
+      
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} votante`;
+
+  async findAll() {
+    try {
+      const votantes = await this.votanteRepository.find();
+          
+      const response = [];
+
+      
+  
+      for (const votante of votantes) {
+        const barrio = await this.neigborhoodRepository.findOne({
+          where: {
+            id: votante.barrio
+          }
+        })
+
+        const comuna = await this.comunaRepository.findOne({
+         where:{
+          id: barrio.comuna
+         }
+        })
+  
+          response.push({
+            ...votante,
+            barrio: barrio.nombreBarrio,
+            comuna: comuna.nombreComuna
+          })
+        
+      }
+      
+  
+      return response;
+        
+      } catch (error) {
+        console.log("error", error);
+        
+      }
   }
 
-  update(id: number, updateVotanteDto: UpdateVotanteDto) {
+ async findOne(id: string) {
+    const votante = await this.votanteRepository.findOneBy({id});
+
+    if (!votante) 
+      throw new NotFoundException(`El votante con el id #${id} no existe`);
+
+    return votante;
+  }
+
+  update(id: string, updateVotanteDto: UpdateVotanteDto) {
     return `This action updates a #${id} votante`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} votante`;
+  async remove(id: string) {
+    const votante = await this.findOne(id)
+    await this.votanteRepository.remove(votante);
+  }
+
+
+
+ async searchNeigborhood(filterVotanteDto: FilterVotanteDto){
+    return await this.neigborhoodRepository.createQueryBuilder('barrio').where(`UPPER(barrio.nombreBarrio) like '%${filterVotanteDto.barrio}%'`).getMany();
   }
 
 

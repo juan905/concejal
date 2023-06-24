@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class CreateVotanteDto {
 
@@ -17,21 +17,22 @@ export class CreateVotanteDto {
     @IsString()
     lugarVotacion: string;
 
-    
     @IsString()
     mesaVotacion: string;
 
-    
     @IsString()
-    aliado: string;
+    @IsOptional()
+    aliado?: string;
 
-    
     @IsString()
     municipio: string;
-
     
     @IsString()
     barrio: string;
+
+    @IsString()
+    direccion: string;
+
 
 
 }
