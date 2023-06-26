@@ -28,7 +28,8 @@ export class CreateVotanteDto {
     municipio: string;
     
     @IsString()
-    barrio: string;
+    @IsOptional()
+    barrio?: string;
 
     @IsString()
     direccion: string;
