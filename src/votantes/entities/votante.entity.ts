@@ -9,7 +9,7 @@ export class Votante {
     nombre: string;
 
     @Column()
-    apellido: string;
+    nombreLider: string;
 
     @Column('text',{
         unique: true

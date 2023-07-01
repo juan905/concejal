@@ -18,7 +18,7 @@ export class VotantesController {
     return this.votantesService.findAll();
   }
 
-  @Get(':id')
+  @Get('/get/:id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.votantesService.findOne(id);
   }
@@ -43,6 +43,11 @@ export class VotantesController {
   @Post('/filter/neigborhoods')
   filterNeigborhood(@Body()filterVotanteDto: FilterVotanteDto){
     return this.votantesService.searchNeigborhood(filterVotanteDto);
+  }
+
+  @Get('/puestoVotacion')
+  encontrarPuestoVotacion(){
+    return this.votantesService.findPuestoVotacion()
   }
 
 }

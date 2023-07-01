@@ -8,6 +8,7 @@ import { NotFoundException } from '@nestjs/common/exceptions';
 import { Barrio } from './entities/barrio.entity';
 import { Comuna } from './entities/comunas.entity';
 import { FilterVotanteDto } from './dto/filter.dto';
+import { PuestoVotacion } from './entities/puestoVotacion';
 
 @Injectable()
 export class VotantesService {
@@ -22,7 +23,10 @@ export class VotantesService {
     private readonly neigborhoodRepository: Repository<Barrio>,
 
     @InjectRepository(Comuna)
-    private readonly comunaRepository: Repository<Comuna>
+    private readonly comunaRepository: Repository<Comuna>,
+
+    @InjectRepository(PuestoVotacion)
+    private readonly puestoVotacion: Repository<PuestoVotacion>
     
   ){}
 
@@ -46,9 +50,6 @@ export class VotantesService {
     try {
     const neigborhoods = await this.neigborhoodRepository.createQueryBuilder('barrio').where(`UPPER(barrio.nombreBarrio) like '%${filterVotanteDto.barrio}%'`).getMany();
 
-    console.log("BARRIOS", neigborhoods);
-    
-      
     const response = [];
 
     for (const barrio of neigborhoods) {
@@ -117,6 +118,16 @@ export class VotantesService {
         console.log("error", error);
         
       }
+  }
+
+  async findPuestoVotacion(){
+    try {
+      const puesto = await this.puestoVotacion.find();
+      return puesto;
+    } catch (error) {
+      console.log("ERROR", error);
+      this.errorServer(error);
+    }
   }
 
  async findOne(id: string) {

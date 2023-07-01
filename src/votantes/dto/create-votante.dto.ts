@@ -6,7 +6,7 @@ export class CreateVotanteDto {
     nombre: string;
 
     @IsString()
-    apellido: string;
+    nombreLider: string;
 
     @IsString()
     cedula: string;
