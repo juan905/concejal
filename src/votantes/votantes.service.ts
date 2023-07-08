@@ -9,6 +9,7 @@ import { Barrio } from './entities/barrio.entity';
 import { Comuna } from './entities/comunas.entity';
 import { FilterVotanteDto } from './dto/filter.dto';
 import { PuestoVotacion } from './entities/puestoVotacion';
+import { Municipios } from './entities/municipios.entity';
 
 @Injectable()
 export class VotantesService {
@@ -26,7 +27,11 @@ export class VotantesService {
     private readonly comunaRepository: Repository<Comuna>,
 
     @InjectRepository(PuestoVotacion)
-    private readonly puestoVotacion: Repository<PuestoVotacion>
+    private readonly puestoVotacion: Repository<PuestoVotacion>,
+
+    @InjectRepository(Municipios)
+    private readonly municipios: Repository<Municipios>
+
     
   ){}
 
@@ -120,12 +125,25 @@ export class VotantesService {
       }
   }
 
+  /**
+   * Trae todos los puestos de votacion de la ciudad de armenia
+   * @returns 
+   */
+
   async findPuestoVotacion(){
     try {
       const puesto = await this.puestoVotacion.find();
       return puesto;
     } catch (error) {
-      console.log("ERROR", error);
+      this.errorServer(error);
+    }
+  }
+
+  async findMunicipios(){
+    try {
+      const municipio = await this.municipios.find();
+      return municipio
+    } catch (error) {
       this.errorServer(error);
     }
   }

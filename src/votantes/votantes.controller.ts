@@ -50,4 +50,9 @@ export class VotantesController {
     return this.votantesService.findPuestoVotacion()
   }
 
+  @Get('/municipios')
+  encontrarMunicpios(){
+    return this.votantesService.findMunicipios()
+  }
+
 }

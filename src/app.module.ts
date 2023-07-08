@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { VotantesModule } from './votantes/votantes.module';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -20,6 +21,7 @@ import { VotantesModule } from './votantes/votantes.module';
       synchronize: true
     }),
     VotantesModule,
+    AuthModule,
   
   ],
 })
