@@ -81,7 +81,6 @@ export class VotantesService {
     return response;
       
     } catch (error) {
-      console.log("error", error);
       
     }
   }

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,6 +9,8 @@ import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
+
+  private readonly logger = new Logger('AuthService');
 
   constructor(
     @InjectRepository(User)
@@ -31,7 +33,7 @@ export class AuthService {
     return user;
 
    } catch (error) {
-    console.log(error);
+    this.errorServer(error);
     
    }
   }
@@ -53,6 +55,21 @@ export class AuthService {
 
    return user
 
+  }
+
+   /**
+   * Funcion para detectar el error
+   * @param error 
+   */
+   errorServer(error: any){
+    if (error) 
+    throw new BadRequestException(error)
+    
+
+    if (error.code === '23505') 
+    throw new BadRequestException(error.detail)
+    this.logger.error(error)
+    throw new InternalServerErrorException('Error inesperado, verifique los logs del servidor');
   }
   
 }

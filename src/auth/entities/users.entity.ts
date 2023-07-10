@@ -5,7 +5,10 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
+    @Column({
+        type: 'text',
+        unique: true,
+    })
     identificacion: string;
 
     @Column()
