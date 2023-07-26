@@ -3,13 +3,17 @@ version: '3'
 
 services:
   db:
-    image: postgres:14.3
+    image: postgres
+    env_file:
+      - .env
     restart: always
     ports:
-         - "8080:5432"
+      - "2244:5432"
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: 'juanjda9rx'
+      POSTGRES_DB: 'politica'
     container_name: politicadb
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - './postgres:/var/lib/postgresql/data'
+volumes:
+  postgres: {}                      
