@@ -1,0 +1,44 @@
+version: '3'
+services:
+  snap-postgresql:
+    container_name: snap-postgresql
+    image: postgres:14.1-alpine
+    restart: always 
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgresql-vol:/var/lib/postgresql/data
+    networks:
+      - snap-network
+
+  snap-backend:
+    build: .
+    container_name: snap-backend
+    restart: unless-stopped
+    image: snap-backend
+    stdin_open: true
+    tty: true
+    ports: 
+      - 7788:7788
+    environment:
+      - DB_HOST=snap-postgresql
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_DATABASE=postgres
+      - DB_PORT=5432
+    expose:
+      - 7788
+    networks:
+      - snap-network
+
+volumes:
+  postgresql-vol:
+
+networks:
+  snap-network:
+    driver: bridge
+    
