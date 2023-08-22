@@ -60,6 +60,7 @@ export class VotantesService {
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
+        ssl:true,
         synchronize: false, // Solo usar en desarrollo - Sincronizar automáticamente tus modelos con la base de datos
         logging: true, // Activa la salida de registro para mostrar las consultas SQL generadas por TypeORM (opcional, útil para depuración)
       })
@@ -87,6 +88,7 @@ export class VotantesService {
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
+        ssl:true,
         synchronize: false, // Solo usar en desarrollo - Sincronizar automáticamente tus modelos con la base de datos
         logging: true, // Activa la salida de registro para mostrar las consultas SQL generadas por TypeORM (opcional, útil para depuración)
       })
